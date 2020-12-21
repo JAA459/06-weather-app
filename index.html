@@ -22,7 +22,7 @@
     </div>
     <div class="row">
         <div class="col-md-2">
-            <input type="text" class="form-control weather-input" placeholder="Enter a City" aria-label="Enter a City" aria-describedby="basic-addon2">
+            <input type="text" class="form-control" id="weather-input" placeholder="Enter a City" aria-label="Enter a City" aria-describedby="basic-addon2">
             <div class="input-group-append">
                 <button class="btn btn-primary search" type="submit">Search</button>
             </div>
@@ -34,24 +34,114 @@
         <div class="col-md-4">
           <div class="card mb-4 box-shadow">
             <div class="card-body">
+                <div>Click on the city you searched to view the weather information</div>
                 <!-- rendered buttons will go here -->
-              <div class="buttons-view"></div>
+              <div id="buttons-view"></div>
               </div>
         </div>
         </div>
         <div class="col-md-6">
           <div class="card mb-4 box-shadow">
             <div class="card-body">
+            <div></div>
                 <!-- weather info will go here -->
-              <div class="weather-view"></div>
+              <div id="city"></div>
+              <div id="temp"></div>
+              <div id="humidity"></div>
+              <div id="windspeed"></div>
+              <div id="UVindex"></div>
               </div>
         </div>
         </div>
     </div>
+    <div>
+        <div class="card mb-4 box-shadow">
+          <div class="card-body">
+          <h1 class="bold">Five Day Forecast</h1>
+              <!-- weather info will go here -->
+            <div class="container col-md-2">
+                <div id="date-1">92kj</div>
+                <div id="temperature-1">fdsf</div>
+                <div id="day-1-hum">dsfs</div>
+            </div>
+            <div class="container col-md-2">
+                <div id="date-1">92kj</div>
+                <div id="temperature-1">fdsf</div>
+                <div id="day-1-hum">dsfs</div>
+            </div>
+         </div>
+      </div>
+      </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script type="text/javascript">
+    var cities = [];
+    
+      function displayMovieInfo() {
+        var city = $(this).attr("data-name");
+        var queryURL = "http://api.openweathermap.org/data/2.5/weather?q="+ city +"&units=imperial&appid=a919f8d6ebff3b8cdcbc03c1604cfc21";
+
+        $.ajax({
+          url: queryURL,
+          method: "GET"
+        }).then(function (response) {
+            console.log(response);
+            var unixDate = (response.dt);
+            var date = new Date(unixDate * 1000);
+
+            $("#city").text("City:  " + (response.name) + "   " + date);
+            $("#temp").text("Temperature:  " + (response.main.temp) + "°F");
+            $("#humidity").text("Humidity:  " + (response.main.humidity) + "%");
+            $("#windspeed").text("Wind Speed:  " + (response.wind.speed) + "MPH");
+
+        var long = (response.coord.lon);
+        var lat = (response.coord.lat);
+        
+        var secondURL = "https://api.openweathermap.org/data/2.5/onecall?lat=" + lat +"&lon="+ long +"&units=imperial&appid=a919f8d6ebff3b8cdcbc03c1604cfc21"
+          
+        $.ajax({
+          url: secondURL,
+          method: "GET"
+        }).then(function (response) {
+            console.log(response);
+            $("#UVindex").text("UV Index:  " + (response.current.uvi));
+        })
+        });
+
+      }
+
+      function renderButtons() {
+
+        $("#buttons-view").empty();
+
+        for (var i = 0; i < cities.length; i++) {
+
+          var a = $("<button>");
+         
+          a.addClass("city-btn");
+       
+          a.attr("data-name", cities[i]);
+      
+          a.text(cities[i]);
+      
+          $("#buttons-view").append(a);
+        }
+      }
+
+      $(".search").on("click", function (event) {
+        event.preventDefault();
+   
+        var city = $("#weather-input").val().trim();
+
+        cities.push(city);
+
+        renderButtons();
+      });
+
+      $(document).on("click", ".city-btn", displayMovieInfo);
+ 
+      renderButtons();
+
+</script>
 </body>
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 </html>
