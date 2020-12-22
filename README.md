@@ -6,4 +6,4 @@ https://github.com/JAA459/06-weather-app
 ### Website
 https://jaa459.github.io/06-weather-app/
 ### Screenshot
-![alt text](https://jaa459.github.io/06-weather-app/blob/main/weatherMap.png)
+![alt text](https://jaa459.github.io/06-weather-app/weatherMap.png)
